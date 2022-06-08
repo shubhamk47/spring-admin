@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spring Admin</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+    <table th:each="var : ${data}">
+      <form>
+        <th th:text="${var}"></th>
+        <tr th:each="field : ${var.getDeclaredFields()}">
+          <td>
+            <label th:text="${field.getName()}"></label>
+          </td>
+          <td>
+            <input type="text" />
+          </td>
+        </tr>
+      </form>
+    </table>
+  </body>
+</html>
