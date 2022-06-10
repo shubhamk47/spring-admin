@@ -9,16 +9,19 @@
   <body>
     <h1>Hello World</h1>
     <table th:each="var : ${data}">
-      <form>
-        <th th:text="${var}"></th>
+      <form method="post" th:action="@{/save}" th:object="${#strings.arraySplit(var, '.')[#lists.size(#strings.arraySplit(var, '.'))-1]}">
+        <input type = "text" th:name="class" th:value="${#strings.arraySplit(var, ' ')[#lists.size(#strings.arraySplit(var, ' '))-1]}" hidden />
+        <th th:text="${#strings.arraySplit(var, '.')[#lists.size(#strings.arraySplit(var, '.'))-1]}"></th>
         <tr th:each="field : ${var.getDeclaredFields()}">
           <td>
             <label th:text="${field.getName()}"></label>
           </td>
-          <td>
-            <input type="text" />
+          <td th:switch="${#strings.toString(field.getType())}">
+            <input th:case="int" th:name="${field.getName()}" type="number" />
+            <textarea th:name="${field.getName()}" th:case="${#strings.toString('class java.lang.String')}" type="textarea" ></textarea>
           </td>
         </tr>
+        <tr><button type="submit">Save</button></tr>
       </form>
     </table>
   </body>
