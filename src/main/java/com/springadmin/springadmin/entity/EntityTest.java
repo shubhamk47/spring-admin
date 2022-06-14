@@ -1,9 +1,15 @@
 package com.springadmin.springadmin.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.springadmin.springadmin.annotations.AdminEntity;
 
 @AdminEntity
@@ -15,6 +21,9 @@ public class EntityTest {
     int id;
     String name;
     float weight;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    LocalDate createdDate;
 
     public int getId() {
         return id;
@@ -38,6 +47,20 @@ public class EntityTest {
 
     public void setWeight(float weight) {
         this.weight = weight;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        // this.createdDate = LocalDate.parse(createdDate);
+        this.createdDate = createdDate;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityTest [createdDate=" + createdDate + ", id=" + id + ", name=" + name + ", weight=" + weight + "]";
     }
 
     public EntityTest() {

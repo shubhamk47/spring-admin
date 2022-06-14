@@ -18,10 +18,12 @@
           </td>
           <td th:switch="${#strings.toString(field.getType())}">
             <input th:case="int" th:name="${field.getName()}" type="number" />
-            <textarea th:name="${field.getName()}" th:case="${#strings.toString('class java.lang.String')}" type="textarea" ></textarea>
+            <input th:name="${field.getName()}" th:case="${#strings.toString('class java.lang.String')}" type="text" />
+            <input th:case="boolean" th:name="${field.getName()}" type="checkbox" value="true">
+            <input th:name="${field.getName()}" th:case="${#strings.toString('class java.time.LocalDate')}" type="date" />
           </td>
         </tr>
-        <tr><button type="submit">Save</button></tr>
+        <tr><td><button type="submit">Save</button></td></tr>
       </form>
     </table>
   </body>
