@@ -43,4 +43,9 @@ public class TestEntity {
     public TestEntity() {
     }
 
+    @Override
+    public String toString() {
+        return "TestEntity [active=" + active + ", id=" + id + ", name=" + name + "]";
+    }
+
 }

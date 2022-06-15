@@ -18,7 +18,7 @@ public class EntityTest {
 
     @Id
     @GeneratedValue
-    int id;
+    Integer id;
     String name;
     float weight;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -29,7 +29,7 @@ public class EntityTest {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
