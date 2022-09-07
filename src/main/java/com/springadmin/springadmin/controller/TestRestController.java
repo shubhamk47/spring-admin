@@ -2,12 +2,12 @@ package com.springadmin.springadmin.controller;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Id;
 
@@ -15,6 +15,8 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +39,15 @@ public class TestRestController {
     CommonRepository commonRepository;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    ApplicationContext applicationContext;
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping("/")
     public Map<Class<?>, Map<String, String>> index() {
-        Reflections reflections = new Reflections("com.springadmin.springadmin");
+        Reflections reflections = new Reflections(
+                AutoConfigurationPackages.get(applicationContext.getAutowireCapableBeanFactory()));
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(AdminEntity.class);
         Map<Class<?>, Map<String, String>> classDetails = new HashMap<>();
         for (Class<?> classRef : classes) {
@@ -58,26 +63,26 @@ public class TestRestController {
     }
 
     @PostMapping("/save")
-    public Map<String, String> saveObject(@RequestBody Map<String, Object> requestMap)
+    public Map<String, Object> saveObject(@RequestBody Map<String, Object> requestMap)
             throws IOException, ClassNotFoundException {
         Class<?> classToWrite = Class.forName(requestMap.get("class").toString());
         requestMap.remove("class");
         Object entity = objectMapper.readValue(objectMapper.writeValueAsString(requestMap), classToWrite);
         commonRepository.insert(entity);
-        log.info("EntityTest - {}", entity.toString());
-        return Map.of(entity.getClass().getName(), entity.toString());
+        //log.info("EntityTest - {}", entity.toString());
+        return Map.of(entity.getClass().getName(), entity);
     }
 
     // TODO: Add update api
     @PatchMapping("/update")
-    public Map<String, String> updateObject(@RequestBody Map<String, Object> requestMap)
+    public Map<String, Object> updateObject(@RequestBody Map<String, Object> requestMap)
             throws ClassNotFoundException, Exception {
         Class<?> classToUpdate = Class.forName(requestMap.get("class").toString());
         requestMap.remove("class");
         log.info(classToUpdate.getName());
         Object entity = objectMapper.readValue(objectMapper.writeValueAsString(requestMap), classToUpdate);
         commonRepository.update(entity);
-        return Map.of(entity.getClass().getName(), entity.toString());
+        return Map.of(entity.getClass().getName(), entity);
     }
 
     // TODO: Add delete api
@@ -94,11 +99,12 @@ public class TestRestController {
 
     // TODO: Fetch single entity object
     @GetMapping("/{className}/{id}")
-    public Map<String, String> getObjectDetails(@PathVariable String className, @PathVariable String id)
+    public Map<String, Object> getObjectDetails(@PathVariable String className, @PathVariable String id)
             throws ClassNotFoundException, Exception {
 
         Class<?> requiredClass = null;
-        Reflections reflections = new Reflections("com.springadmin.springadmin");
+        Reflections reflections = new Reflections(
+                AutoConfigurationPackages.get(applicationContext.getAutowireCapableBeanFactory()));
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(AdminEntity.class);
         for (Class<?> annotatedClass : classes) {
             if (annotatedClass.getSimpleName().equals(className)) {
@@ -113,7 +119,7 @@ public class TestRestController {
                 getConvertedId(id, idField));
 
         return Map.of(requiredObject.getClass().getName(),
-                requiredObject.toString());
+                requiredObject);
 
     }
 
@@ -123,21 +129,20 @@ public class TestRestController {
             return id;
         } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
             return Integer.valueOf(id);
-        } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
-            return Boolean.valueOf(id);
         } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
             return Double.valueOf(id);
         } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
             return Long.valueOf(id);
-        } else {
-            throw new IllegalArgumentException("Bad type.");
+        } else if(clazz.isAssignableFrom(UUID.class)){
+            return UUID.fromString(id);
+        }  else {
+            throw new IllegalArgumentException("Bad type");
         }
     }
 
     @GetMapping("/{className}")
     public Map<Object, Object> getAllObjects(@PathVariable String className)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException {
+            throws Exception {
         Class<?> requiredClass = null;
         Reflections reflections = new Reflections("com.springadmin.springadmin");
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(AdminEntity.class);
@@ -155,9 +160,11 @@ public class TestRestController {
                 .getAllObjects(requiredClass);
         Map<Object, Object> retMap = new HashMap<>();
         idField.setAccessible(true);
+
         for (Object item : queryResult) {
             retMap.put(idField.get(item), item);
         }
+
         return retMap;
     }
 

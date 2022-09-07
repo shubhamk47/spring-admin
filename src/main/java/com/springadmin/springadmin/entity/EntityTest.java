@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,6 +26,9 @@ public class EntityTest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     LocalDate createdDate;
+    @OneToOne
+    @JoinColumn(name="entityTest")
+    EntityNew entityNew;
 
     public int getId() {
         return id;
