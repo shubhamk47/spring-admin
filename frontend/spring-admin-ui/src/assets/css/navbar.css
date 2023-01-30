@@ -1,0 +1,19 @@
+.navbar{
+    background-color: #333;
+    overflow: hidden;
+}
+
+/* style={{ "color" : "white", "float" : "left", "paddingLeft" : "2%"  }} */
+.title{
+    color: white;
+    float: left;
+    padding-left: 2%;
+    font-weight: lighter;
+}
+
+.user{
+    color: white;
+    float: right;
+    padding-right: 2%;
+    font-weight: lighter;
+}

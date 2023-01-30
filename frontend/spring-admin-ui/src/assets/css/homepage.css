@@ -1,0 +1,29 @@
+.home-container h1{
+    text-align: left;
+    padding-left: 5%;
+    font-weight: lighter;
+}
+
+.entity-table {
+    border-collapse: collapse;
+    width: 30%;
+}
+
+.entity-table thead {
+    background-color: #333;
+    color: white;
+}
+
+.entity-table thead tr th{
+    font-size: x-large;
+    font-weight: lighter;
+}
+.entity-table tbody tr {
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+    padding-top: 20em;
+}
+
+#options {
+    float: right;
+}

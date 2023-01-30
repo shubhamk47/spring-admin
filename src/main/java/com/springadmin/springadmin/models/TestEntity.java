@@ -1,16 +1,10 @@
 package com.springadmin.springadmin.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.springadmin.springadmin.annotations.AdminEntity;
 import com.springadmin.springadmin.entity.EntityNew;
 
-@AdminEntity
+import javax.persistence.*;
+
 @Entity
 public class TestEntity {
 
@@ -23,6 +17,9 @@ public class TestEntity {
     @JoinColumn(name = "entity_new_id", nullable = false)
     @JsonBackReference
     EntityNew entityNew;
+
+    public TestEntity() {
+    }
 
     public int getId() {
         return id;
@@ -46,9 +43,6 @@ public class TestEntity {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public TestEntity() {
     }
 
     public EntityNew getEntityNew() {

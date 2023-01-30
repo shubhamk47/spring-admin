@@ -1,20 +1,12 @@
 package com.springadmin.springadmin.entity;
 
-import java.util.Set;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.springadmin.springadmin.annotations.AdminEntity;
 import com.springadmin.springadmin.models.TestEntity;
 
+import javax.persistence.*;
+import java.util.Set;
+
 @Entity
-@AdminEntity
 public class EntityNew {
 
     @Id
@@ -26,6 +18,9 @@ public class EntityNew {
     EntityTest entityTest;
     @OneToMany(mappedBy = "entityNew")
     Set<TestEntity> testEntities;
+
+    public EntityNew() {
+    }
 
     public int getId() {
         return id;
@@ -41,9 +36,6 @@ public class EntityNew {
 
     public void setTest(String test) {
         this.test = test;
-    }
-
-    public EntityNew() {
     }
 
     public EntityTest getEntityTest() {
